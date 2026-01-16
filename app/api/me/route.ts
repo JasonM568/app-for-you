@@ -33,20 +33,21 @@ export async function GET(req: NextRequest) {
   const { data, error } = await supabase.auth.getUser();
 
   // ✅ 未登入：回引導文字 + 完整 login_url（給 GPT 印出可點擊連結）
-  if (error || !data?.user) {
-    const baseUrl = getBaseUrl(req);
-    const login_url = `${baseUrl}/login`;
+ if (error || !data?.user) {
+  const baseUrl = getBaseUrl(req);
+  const login_url = `${baseUrl.replace(/\s+/g, "")}/login`;
 
-    return NextResponse.json(
-      {
-        loggedIn: false,
-        valid: false,
-        note: "首次使用請先點擊下方『登入』完成驗證，完成後我才會開始回答你的問題。",
-        login_url,
-      },
-      { status: 200 }
-    );
-  }
+  return NextResponse.json(
+    {
+      loggedIn: false,
+      valid: false,
+      note: "首次使用請先點擊下方『登入』完成驗證，完成後我才會開始回答你的問題。",
+      login_url,
+    },
+    { status: 200 }
+  );
+}
+
 
   // ✅ 已登入
   return NextResponse.json(
