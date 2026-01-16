@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
 
   // ✅ Allowlist redirect_uri（你的 GPT 回呼 URL）
   const allowed = new Set([
-    "https://chat.openai.com/aip/g-d3f09556f71f0d404bdecd936d5a26362e82a34e/oauth/callback",
+    "https://chat.openai.com/aip/g-6967b65b2ce08191bc1dd2f4f786bbc4/oauth/callback",
   ]);
   if (!allowed.has(redirect_uri)) {
     return NextResponse.json({ error: "invalid_redirect_uri", got: redirect_uri }, { status: 400 });
