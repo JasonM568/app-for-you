@@ -21,7 +21,13 @@ export default function LoginClient({ returnTo }: { returnTo: string }) {
       return;
     }
     // 登入後導回 returnTo（通常是 /oauth/authorize?...）
-    router.replace(returnTo || "/");
+    const target = returnTo || "/";
+// returnTo 可能是完整 https URL，用瀏覽器原生導向最穩
+if (target.startsWith("http")) {
+  window.location.assign(target);
+} else {
+  router.replace(target);
+}
   }
 
   return (
