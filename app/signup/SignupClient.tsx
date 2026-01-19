@@ -46,7 +46,19 @@ export default function SignupClient({ returnTo }: { returnTo: string }) {
         📌 歡迎使用 Meta 廣告分析師！請先註冊帳號，完成後即可在 ChatGPT 中使用所有分析功能。
       </div>
       
-      {msg ? <p style={{ color: msg.includes("🎉") ? "green" : msg.includes("Error") ? "crimson" : "#666", marginBottom: 12 }}>{msg}</p> : null}
+      {msg ? (
+        <p style={{ 
+          color: msg.includes("🎉") ? "green" : msg.includes("Error") ? "crimson" : msg.includes("此帳號已經註冊") ? "#d97706" : "#666", 
+          marginBottom: 12,
+          fontWeight: msg.includes("此帳號已經註冊") ? 600 : 400,
+          backgroundColor: msg.includes("此帳號已經註冊") ? "#fef3c7" : "transparent",
+          padding: msg.includes("此帳號已經註冊") ? "12px" : "0",
+          borderRadius: msg.includes("此帳號已經註冊") ? "8px" : "0",
+          border: msg.includes("此帳號已經註冊") ? "1px solid #fbbf24" : "none"
+        }}>
+          {msg}
+        </p>
+      ) : null}
       
       <form onSubmit={onSignup} style={{ display: "grid", gap: 12 }}>
         <label>
