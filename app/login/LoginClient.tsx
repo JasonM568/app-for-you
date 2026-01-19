@@ -70,6 +70,16 @@ export default function LoginClient({ returnTo }: { returnTo: string }) {
         </button>
       </form>
       
+      <div style={{ marginTop: 16, textAlign: "center", color: "#666" }}>
+        還沒有帳號？
+        <a 
+          href={`/signup${isOAuthFlow ? `?returnTo=${encodeURIComponent(returnTo)}` : ''}`}
+          style={{ color: "#0070f3", marginLeft: 4, textDecoration: "none", fontWeight: 600 }}
+        >
+          註冊帳號
+        </a>
+      </div>
+      
       {msg.includes("成功") && !isOAuthFlow && (
         <div style={{ marginTop: 20, padding: 16, backgroundColor: "#f0f9ff", borderRadius: 8, textAlign: "center" }}>
           <p style={{ marginBottom: 12, color: "#0070f3" }}>驗證完成！請點擊下方按鈕前往 GPT。</p>
