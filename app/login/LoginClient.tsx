@@ -19,7 +19,12 @@ export default function LoginClient({ returnTo }: { returnTo: string }) {
 
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
-      setMsg(error.message);
+      // 轉換 Email 未驗證的錯誤訊息
+      if (error.message.includes("Email not confirmed")) {
+        setMsg("您的Email還沒完成驗證，請到信箱收取認證信件。");
+      } else {
+        setMsg(error.message);
+      }
       return;
     }
     
