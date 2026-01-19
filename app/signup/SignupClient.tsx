@@ -35,7 +35,13 @@ export default function SignupClient({ returnTo }: { returnTo: string }) {
       return setMsg(`Error: ${error.message}`);
     }
     
-    setMsg("🎉 帳號建立成功！請點擊下方連結登入，或返回 GPT 重新授權。");
+    setMsg("🎉 帳號建立成功！正在跳轉到登入頁面...");
+    
+    // 延遲 1.5 秒後跳轉到登入頁面
+    setTimeout(() => {
+      const loginUrl = `/login${returnTo ? `?returnTo=${encodeURIComponent(returnTo)}` : ''}`;
+      router.push(loginUrl);
+    }, 1500);
   }
 
   return (
