@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
   /**
    * ❌ 未登入 / 未帶 token → 導向 Login → OAuth authorize
    */
-  if (!token) {
+  if (!token || !token.startsWith("TOKEN_")) {
     const baseUrl =
       process.env.BASE_URL?.replace(/\/$/, "") ||
       "https://qbc-gpts.vercel.app";
