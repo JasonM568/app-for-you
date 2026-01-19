@@ -25,8 +25,22 @@ export default function LoginClient({ returnTo }: { returnTo: string }) {
     
     setMsg("登入成功！正在導向...");
     
-    // 登入後導回 returnTo（通常是 /oauth/authorize?...）
-    const target = returnTo || "/";
+    // 如果沒有 returnTo，構建 OAuth authorize URL
+    let target = returnTo;
+    if (!isOAuthFlow) {
+      const baseUrl = window.location.origin;
+      const authorizeUrl = new URL("/oauth/authorize", baseUrl);
+      authorizeUrl.searchParams.set("response_type", "code");
+      authorizeUrl.searchParams.set("client_id", "qbc-2026-gpt");
+      authorizeUrl.searchParams.set(
+        "redirect_uri",
+        "https://chat.openai.com/aip/g-6967b65b2ce08191bc1dd2f4f786bbc4/oauth/callback"
+      );
+      authorizeUrl.searchParams.set("scope", "basic");
+      authorizeUrl.searchParams.set("state", "from_login");
+      target = authorizeUrl.toString();
+    }
+    
     // returnTo 可能是完整 https URL，用瀏覽器原生導向最穩
     if (target.startsWith("http")) {
       window.location.assign(target);
@@ -41,7 +55,7 @@ export default function LoginClient({ returnTo }: { returnTo: string }) {
       
       {!isOAuthFlow && (
         <div style={{ padding: 12, backgroundColor: "#fff3cd", borderRadius: 8, marginBottom: 16, color: "#856404" }}>
-          ⚠️ 請從 GPT 中發起授權流程，而不是直接訪問此頁面。
+          ℹ️ 登入後將自動完成 OAuth 授權並返回 GPT。
         </div>
       )}
       
