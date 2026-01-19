@@ -23,30 +23,18 @@ export default function LoginClient({ returnTo }: { returnTo: string }) {
       return;
     }
     
-    setMsg("登入成功！正在導向...");
+    setMsg("登入成功！");
     
-    // 如果沒有 returnTo，構建 OAuth authorize URL
-    let target = returnTo;
-    if (!isOAuthFlow) {
-      const baseUrl = window.location.origin;
-      const authorizeUrl = new URL("/oauth/authorize", baseUrl);
-      authorizeUrl.searchParams.set("response_type", "code");
-      authorizeUrl.searchParams.set("client_id", "qbc-2026-gpt");
-      authorizeUrl.searchParams.set(
-        "redirect_uri",
-        "https://chat.openai.com/aip/g-6967b65b2ce08191bc1dd2f4f786bbc4/oauth/callback"
-      );
-      authorizeUrl.searchParams.set("scope", "basic");
-      authorizeUrl.searchParams.set("state", "from_login");
-      target = authorizeUrl.toString();
+    // 如果有 returnTo，自動跳轉
+    if (isOAuthFlow) {
+      const target = returnTo;
+      if (target.startsWith("http")) {
+        window.location.assign(target);
+      } else {
+        router.replace(target);
+      }
     }
-    
-    // returnTo 可能是完整 https URL，用瀏覽器原生導向最穩
-    if (target.startsWith("http")) {
-      window.location.assign(target);
-    } else {
-      router.replace(target);
-    }
+    // 如果沒有 returnTo，只顯示成功訊息和按鈕
   }
 
   return (
@@ -55,7 +43,7 @@ export default function LoginClient({ returnTo }: { returnTo: string }) {
       
       {!isOAuthFlow && (
         <div style={{ padding: 12, backgroundColor: "#fff3cd", borderRadius: 8, marginBottom: 16, color: "#856404" }}>
-          ℹ️ 登入後將自動完成 OAuth 授權並返回 GPT。
+          ℹ️ 請從 GPT 中點擊需要授權的功能，系統會自動導向此頁面。
         </div>
       )}
       
@@ -82,9 +70,9 @@ export default function LoginClient({ returnTo }: { returnTo: string }) {
         </button>
       </form>
       
-      {msg.includes("成功") && isOAuthFlow && (
+      {msg.includes("成功") && !isOAuthFlow && (
         <div style={{ marginTop: 20, padding: 16, backgroundColor: "#f0f9ff", borderRadius: 8, textAlign: "center" }}>
-          <p style={{ marginBottom: 12, color: "#0070f3" }}>驗證完成！正在返回 GPT...</p>
+          <p style={{ marginBottom: 12, color: "#0070f3" }}>驗證完成！請點擊下方按鈕前往 GPT。</p>
           <a 
             href="https://chatgpt.com/g/g-6967b65b2ce08191bc1dd2f4f786bbc4-meta-guang-gao-fen-xi-shi"
             style={{ 
@@ -99,6 +87,12 @@ export default function LoginClient({ returnTo }: { returnTo: string }) {
           >
             前往 GPT
           </a>
+        </div>
+      )}
+      
+      {msg.includes("成功") && isOAuthFlow && (
+        <div style={{ marginTop: 20, padding: 16, backgroundColor: "#f0f9ff", borderRadius: 8, textAlign: "center" }}>
+          <p style={{ color: "#0070f3" }}>正在返回 GPT...</p>
         </div>
       )}
     </div>
