@@ -53,8 +53,10 @@ export async function GET(req: NextRequest) {
 
   // 未登入 → 導到 /login，並帶 returnTo 回來續跑 authorize
   if (!data.user) {
-    const loginUrl = new URL("/login", process.env.BASE_URL);
-    loginUrl.searchParams.set("returnTo", req.nextUrl.toString());
+    const baseUrl = process.env.BASE_URL || req.nextUrl.origin;
+    const loginUrl = new URL("/login", baseUrl);
+    const authorizeUrl = new URL(req.nextUrl.pathname + req.nextUrl.search, baseUrl);
+    loginUrl.searchParams.set("returnTo", authorizeUrl.toString());
     return NextResponse.redirect(loginUrl.toString(), { headers: res.headers });
   }
 
