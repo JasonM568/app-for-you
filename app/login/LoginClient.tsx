@@ -10,6 +10,8 @@ export default function LoginClient({ returnTo }: { returnTo: string }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState<string>("");
+  
+  const isOAuthFlow = returnTo && returnTo !== "/";
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -36,6 +38,13 @@ export default function LoginClient({ returnTo }: { returnTo: string }) {
   return (
     <div style={{ maxWidth: 420, margin: "40px auto", padding: 16 }}>
       <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12 }}>Login</h1>
+      
+      {!isOAuthFlow && (
+        <div style={{ padding: 12, backgroundColor: "#fff3cd", borderRadius: 8, marginBottom: 16, color: "#856404" }}>
+          ⚠️ 請從 GPT 中發起授權流程，而不是直接訪問此頁面。
+        </div>
+      )}
+      
       {msg ? <p style={{ color: msg.includes("成功") ? "green" : "crimson" }}>{msg}</p> : null}
       <form onSubmit={onSubmit} style={{ display: "grid", gap: 10 }}>
         <input
@@ -59,7 +68,7 @@ export default function LoginClient({ returnTo }: { returnTo: string }) {
         </button>
       </form>
       
-      {msg.includes("成功") && (
+      {msg.includes("成功") && isOAuthFlow && (
         <div style={{ marginTop: 20, padding: 16, backgroundColor: "#f0f9ff", borderRadius: 8, textAlign: "center" }}>
           <p style={{ marginBottom: 12, color: "#0070f3" }}>驗證完成！正在返回 GPT...</p>
           <a 
