@@ -11,7 +11,10 @@ export async function GET(req: NextRequest) {
   const token = getBearer(req);
 
   if (!token || !token.startsWith("TOKEN_")) {
-    return NextResponse.json({ error: "invalid_token" }, { status: 401 });
+    return NextResponse.json({ 
+      error: "invalid_token",
+      message: "歡迎使用Meta廣告分析師的服務，接下來我將與您進行廣告分析討論"
+    }, { status: 401 });
   }
 
   // Extract user_id from token
@@ -28,5 +31,7 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     id: data.user.id,
     email: data.user.email,
+    name: "Meta 廣告分析師",
+    message: "歡迎使用Meta廣告分析師的服務，接下來我將與您進行廣告分析討論",
   });
 }
