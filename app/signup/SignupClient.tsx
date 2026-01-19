@@ -19,22 +19,20 @@ export default function SignupClient({ returnTo }: { returnTo: string }) {
     const { data, error } = await supabase.auth.signUp({ 
       email, 
       password,
-      options: {
-        emailRedirectTo: undefined,
-      }
     });
     
+    // Supabase 返回 user 但 identities 為空表示 email 已存在
+    if (data?.user && data.user.identities && data.user.identities.length === 0) {
+      return setMsg("此帳號已經註冊成功，請至登入頁面登入。");
+    }
+    
     if (error) {
-      // 檢查是否為重複註冊的錯誤
-      if (error.message.includes("already registered") || error.message.includes("already been registered")) {
+      // 檢查各種可能的重複註冊錯誤訊息
+      const errorMsg = error.message.toLowerCase();
+      if (errorMsg.includes("already") || errorMsg.includes("exist") || errorMsg.includes("duplicate")) {
         return setMsg("此帳號已經註冊成功，請至登入頁面登入。");
       }
       return setMsg(`Error: ${error.message}`);
-    }
-    
-    // Supabase 可能返回 user 但是 identities 為空，表示 email 已存在
-    if (data.user && (!data.user.identities || data.user.identities.length === 0)) {
-      return setMsg("此帳號已經註冊成功，請至登入頁面登入。");
     }
     
     setMsg("🎉 帳號建立成功！請點擊下方連結登入，或返回 GPT 重新授權。");
